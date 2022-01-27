@@ -10,8 +10,8 @@ export async function postgres() {
     });
 
     try {
-        // let db = {};
-        // db.users = await Models.UserModel(sequelize, Sequelize);
+        let db = {};
+        db.users = await Models.UserModel(sequelize, Sequelize);
 
         // await Models.Relations(db);
 
@@ -23,9 +23,9 @@ export async function postgres() {
         await sequelize.authenticate();
         console.log("Connection has been established successfully.");
 
-        // await sequelize.sync({ force: false });
+        await sequelize.sync({ force: true });
 
-        // return db;
+        return db;
     } catch (error) {
         console.log(error);
     }
