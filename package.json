@@ -1,5 +1,5 @@
 {
-  "name": "Fulan",
+  "name": "fulan",
   "version": "1.0.0",
   "description": "\"# fulan-backend\"",
   "main": "index.js",
@@ -21,6 +21,9 @@
   "dependencies": {
     "cors": "^2.8.5",
     "dotenv": "^14.3.2",
-    "express": "^4.17.2"
+    "express": "^4.17.2",
+    "pg": "^8.7.1",
+    "pg-hstore": "^2.3.4",
+    "sequelize": "^6.14.1"
   }
 }

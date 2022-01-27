@@ -1,15 +1,24 @@
 import Express from "express";
+import Path from "path"
 import DotEnv from "dotenv";
-import { ErrorHandler } from "./src/helpers/errorHandler";
+import cors from "cors"
+import { ErrorHandler } from "./src/helpers/errorHandler.js";
+import routes from "./src/routes/routes.js";
+import { postgres } from "./src/modules/pg.js";
 
 const PORT = process.env.PORT || 4443;
+
+// Get environment variables
+DotEnv.config({
+    path: Path.join(Path.resolve(), ".env"),
+});
 
 async function server() {
     //Create server
     const app = Express();
 
     //Run server
-    app.listen(PORT, () => console.log(`Server ready at${PORT}`));
+    app.listen(PORT, () => console.log(`Server ready at ${PORT}`));
 
     //Middlewares
     app.use(cors({ origin: "*" }));
@@ -21,4 +30,9 @@ async function server() {
         res.err = ErrorHandler;
         next();
     });
+
+    await postgres()
+    await routes(app)
 }
+
+server()
