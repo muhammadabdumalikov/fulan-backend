@@ -36,7 +36,7 @@ export default class Models {
             },
             birth_date: {
                 type: Sequelize.DataTypes.DATEONLY,
-                allowNull: false,
+                allowNull: true,
             },
             about_self: {
                 type: Sequelize.DataTypes.STRING,

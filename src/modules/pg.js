@@ -25,10 +25,22 @@ export async function postgres() {
         // })
         // await db.driver_trips.sync({force: true})
 
-        await sequelize.authenticate();
-        console.log("Connection has been established successfully.");
+        // await db.users.create({
+        //     first_name: "1234",
+        //     last_name: "1234",
+        //     user_phone: "998911234567",
+        //     user_second_phone: "998911234567",
+        //     address: "Andijon",
+        //     working: false,
+        //     about_self: "Admin",
+        //     summ: "0",
+        //     definition: "Admin",
+        //     user_role: "superadmin",
+        // })
 
-        await sequelize.sync({ force: true });
+        await sequelize.sync({ force: false });
+
+        console.log(await db.users.findAll())
 
         return db;
     } catch (error) {
