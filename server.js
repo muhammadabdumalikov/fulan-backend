@@ -1,7 +1,7 @@
 import Express from "express";
-import Path from "path"
+import Path from "path";
 import DotEnv from "dotenv";
-import cors from "cors"
+import cors from "cors";
 import { ErrorHandler } from "./src/helpers/errorHandler.js";
 import routes from "./src/routes/routes.js";
 import { postgres } from "./src/modules/pg.js";
@@ -20,6 +20,9 @@ async function server() {
     //Run server
     app.listen(PORT, () => console.log(`Server ready at ${PORT}`));
 
+    //Get database
+    let db = await postgres();
+
     //Middlewares
     app.use(cors({ origin: "*" }));
     app.use(Express.urlencoded({ extended: true }));
@@ -28,11 +31,11 @@ async function server() {
     //ErrorHandler helper
     app.use((req, res, next) => {
         res.err = ErrorHandler;
+        req.db = db;
         next();
     });
 
-    await postgres()
-    await routes(app)
+    await routes(app);
 }
 
-server()
+server();

@@ -40,7 +40,7 @@ export async function postgres() {
 
         await sequelize.sync({ force: false });
 
-        console.log(await db.users.findAll())
+        // console.log(await db.users.findAll())
 
         return db;
     } catch (error) {

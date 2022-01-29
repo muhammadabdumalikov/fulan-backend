@@ -1,32 +1,20 @@
 import Express from "express";
-import { Validations } from "../modules/validations";
+import pkg, { Op } from "sequelize";
+import { Validations } from "../modules/validations.js";
 import { v4 as uuidv4 } from "uuid";
 import RN from "random-number";
 
 export default class UserController {
     static async UserCreateAccount(req, res, next) {
         try {
-            const {
-                phone,
-                first_name,
-                last_name,
-                user_phone,
-                user_second_phone,
-                address,
-                working,
-                birth_date,
-                about_self,
-                provide_type,
-                summ,
-                definition,
-            } = await (
+            const { first_name, last_name, user_phone } = await (
                 await Validations.UserCreateAccountValidation()
             ).validateAsync(req.body);
 
             let isUserExist = await req.db.users.findOne({
                 where: {
                     user_phone: {
-                        [Op.iLike]: `%${phone}%`,
+                        [Op.iLike]: `%${user_phone}%`,
                     },
                 },
             });
@@ -34,18 +22,12 @@ export default class UserController {
             if (isUserExist) throw new res.error(400, "User already exists");
 
             let user = await req.db.users.create({
-                firts_name: first_name,
+                first_name: first_name,
                 last_name: last_name,
                 user_phone: user_phone,
-                user_second_phone: user_second_phone,
-                address: address,
-                working: working,
-                birth_date: birth_date,
-                about_self: about_self,
-                provide_type: provide_type,
-                summ: summ,
-                definition: definition,
             });
+
+            console.log(first_name)
 
             const gen = RN.generator({
                 min: 10000,
@@ -62,11 +44,12 @@ export default class UserController {
             //     user_id: user.user_id,
             // });
 
-            response.status(201).json({
+            res.status(201).json({
                 ok: true,
                 message: "CODE IS SENDED TO YOUR DEVICE",
                 data: {
                     // id: attempt.dataValues.attempt_id,
+                    user,
                     code: genNumber,
                 },
             });
