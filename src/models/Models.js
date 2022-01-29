@@ -41,6 +41,7 @@ export default class Models {
             about_self: {
                 type: Sequelize.DataTypes.STRING,
                 allowNull: true,
+                defaultValue: ""
             },
             provide_type: {
                 type: Sequelize.DataTypes.ENUM,
@@ -50,10 +51,12 @@ export default class Models {
             summ: {
                 type: Sequelize.DataTypes.STRING(32),
                 allowNull: false,
+                defaultValue: ""
             },
             definition: {
                 type: Sequelize.DataTypes.STRING,
                 allowNull: false,
+                defaultValue: ""
             },
             user_role: {
                 type: Sequelize.DataTypes.ENUM,
