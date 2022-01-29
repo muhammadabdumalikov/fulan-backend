@@ -1,7 +1,7 @@
 import Express from "express";
 import { Validations } from "../modules/validations";
 import { v4 as uuidv4 } from "uuid";
-import RN from "random-number"
+import RN from "random-number";
 
 export default class UserController {
     static async UserCreateAccount(req, res, next) {
@@ -64,13 +64,17 @@ export default class UserController {
 
             response.status(201).json({
                 ok: true,
-                message:
-                    "CODE IS SENDED TO YOUR DEVICE",
+                message: "CODE IS SENDED TO YOUR DEVICE",
                 data: {
                     // id: attempt.dataValues.attempt_id,
                     code: genNumber,
                 },
             });
-        } catch (error) {}
+        } catch (error) {
+            console.log(error);
+            if (!error.statusCode)
+                error = new response.error(400, "Invalid inputs");
+            next(error);
+        }
     }
 }
