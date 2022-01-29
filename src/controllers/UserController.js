@@ -19,7 +19,11 @@ export default class UserController {
                 },
             });
 
-            if (isUserExist) throw new res.error(400, "User already exists");
+            if (isUserExist)
+                res.status(400).json({
+                    ok: false,
+                    message: "User already exists",
+                });
 
             let user = await req.db.users.create({
                 first_name: first_name,
@@ -37,34 +41,57 @@ export default class UserController {
 
             // let messageID = uuidv4();
 
-            // let attempt = await request.db.attempts.create({
-            //     user_code: genNumber,
-            //     user_id: user.user_id,
-            // });
+            let attempt = await req.db.attempts.create({
+                user_code: genNumber,
+                user_id: user.user_id,
+            });
 
             res.status(201).json({
                 ok: true,
                 message: "CODE IS SENDED TO YOUR DEVICE",
                 data: {
-                    // id: attempt.dataValues.attempt_id,
-                    user,
+                    id: attempt.dataValues.attempt_id,
                     code: genNumber,
                 },
             });
         } catch (error) {
             console.log(error);
-            if (!error.statusCode)
-                error = new response.error(400, "Invalid inputs");
+            if (!error.statusCode) error = new res.error(400, "Invalid inputs");
             next(error);
         }
     }
 
     static async ValidateUserCode(req, res, next) {
         try {
-            // let validationId = req.headers["code-validation-id"]
+            let validationId = req.headers["code-validation-id"];
+
+            if (!validationId)
+                res.status(400).json({
+                    ok: false,
+                    message: "Invalid validation token",
+                });
+
+            let attempt = await req.db.attempts.findOne({
+                where: {
+                    attempt_id: validationId,
+                },
+                include: {
+                    model: req.db.users,
+                },
+            });
+
+            if (!attempt)
+                res.status(400).json({
+                    ok: false,
+                    message: "Validation code incorrect",
+                });
             let { validation_code } = await (
                 await Validations.ValidateUserCodeValidation()
             ).validateAsync(req.body);
+
+            res.status(200).json({
+                ok: true
+            })
 
             console.log(validation_code);
         } catch (error) {
