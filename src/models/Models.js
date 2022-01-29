@@ -28,6 +28,7 @@ export default class Models {
             address: {
                 type: Sequelize.DataTypes.STRING,
                 allowNull: true,
+                defaultValue: " "
             },
             working: {
                 type: Sequelize.DataTypes.BOOLEAN,
