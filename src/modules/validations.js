@@ -36,4 +36,14 @@ export class Validations {
             // definition: Joi.string().required(),
         });
     }
+
+    static async ValidateUserCodeValidation() {
+        return Joi.object({
+            validation_code: Joi.string()
+                .required()
+                .min(5)
+                .max(5)
+                .error(new Error("Invalid code")),
+        });
+    }
 }

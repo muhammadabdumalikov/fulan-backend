@@ -27,8 +27,6 @@ export default class UserController {
                 user_phone: user_phone,
             });
 
-            console.log(first_name)
-
             const gen = RN.generator({
                 min: 10000,
                 max: 99999,
@@ -58,6 +56,19 @@ export default class UserController {
             if (!error.statusCode)
                 error = new response.error(400, "Invalid inputs");
             next(error);
+        }
+    }
+
+    static async ValidateUserCode(req, res, next) {
+        try {
+            // let validationId = req.headers["code-validation-id"]
+            let { validation_code } = await (
+                await Validations.ValidateUserCodeValidation()
+            ).validateAsync(req.body);
+
+            console.log(validation_code);
+        } catch (error) {
+            console.log(error);
         }
     }
 }
