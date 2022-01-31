@@ -31,7 +31,7 @@ export class Validations {
 
     static async EditUserAccount() {
         return Joi.object({
-            first_name: Joi.string()
+            firstName: Joi.string()
                 .required()
                 .error(
                     new Error(
@@ -40,22 +40,22 @@ export class Validations {
                 )
                 .min(3)
                 .max(24),
-            last_name: Joi.string()
+            lastName: Joi.string()
                 .required()
                 .error(new Error("Lastname should be minimum 3 and maximum 64"))
                 .min(3)
                 .max(24),
-            user_second_phone: Joi.string()
+            secondPhone: Joi.string()
                 .error(new Error("Phone number is incorrect"))
                 .pattern(/^998[389][012345789][0-9]{7}$/),
             address: Joi.string().required().min(3).max(124),
             working: Joi.boolean().required(),
-            birth_date: Joi.date()
+            birthDate: Joi.date()
                 .required()
-                .error(new Error("You must be greater than *"))
-                .timestamp()
-                .greater("now"),
-            about_self: Joi.string().required(),
+                .error(new Error("You must be greater than *")),
+                // .timestamp()
+                // .greater("now"),
+            aboutSelf: Joi.string().required(),
             summ: Joi.string().required(),
             definition: Joi.string().required(),
         });

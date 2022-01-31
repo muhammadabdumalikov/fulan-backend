@@ -3,7 +3,7 @@ import pkg, { Op } from "sequelize";
 import { Validations } from "../modules/validations.js";
 import { v4 as uuidv4 } from "uuid";
 import RN from "random-number";
-import { signJwtToken } from "../modules/jwt.js";
+import { signJwtToken, verifyJwtToken } from "../modules/jwt.js";
 
 export default class UserController {
     static async UserCreateAccount(req, res, next) {
@@ -261,6 +261,67 @@ export default class UserController {
         }
     }
 
+    static async EditUserAccount(req, res, next) {
+        try {
+            let token = req.headers["token"];
+
+            let userToken = verifyJwtToken(token);
+
+            if (!userToken)
+                res.status(400).json({
+                    ok: false,
+                    message: "You have not a user token or invalid token",
+                });
+
+            let session = await req.db.sessions.findOne({
+                where: {
+                    session_id: userToken.session_id,
+                },
+            });
+
+            let {
+                firstName,
+                lastName,
+                secondPhone,
+                address,
+                working,
+                birthDate,
+                aboutSelf,
+                summ,
+                definition,
+            } = await (
+                await Validations.EditUserAccount()
+            ).validateAsync(req.body);
+
+            let user = await req.db.users.update(
+                {
+                    first_name: firstName,
+                    last_name: lastName,
+                    user_second_phone: secondPhone,
+                    address: address,
+                    working: working,
+                    birth_date: birthDate,
+                    about_self: aboutSelf,
+                    summ: summ,
+                    definition: definition,
+                },
+                {
+                    where: {
+                        user_id: session.dataValues.user_id,
+                    },
+                    returning: true,
+                }
+            );
+
+            console.log(user[1]);
+        } catch (error) {
+            console.log(error);
+            res.status(400).json({
+                ok: false,
+            });
+        }
+    }
+
     static async GetAllUsers(req, res, next) {
         try {
             const users = await req.db.users.findAll();
@@ -269,7 +330,6 @@ export default class UserController {
                 ok: true,
                 data: users,
             });
-
         } catch (error) {
             console.log(error);
             res.status(400).json({
