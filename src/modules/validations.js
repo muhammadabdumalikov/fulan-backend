@@ -45,10 +45,6 @@ export class Validations {
                 .error(new Error("Lastname should be minimum 3 and maximum 64"))
                 .min(3)
                 .max(24),
-            user_phone: Joi.string()
-                .required()
-                .error(new Error("Phone number is incorrect"))
-                .pattern(/^998[389][012345789][0-9]{7}$/),
             user_second_phone: Joi.string()
                 .error(new Error("Phone number is incorrect"))
                 .pattern(/^998[389][012345789][0-9]{7}$/),
@@ -59,7 +55,7 @@ export class Validations {
                 .error(new Error("You must be greater than *"))
                 .timestamp()
                 .greater("now"),
-            about_self: Joi.string(),
+            about_self: Joi.string().required(),
             summ: Joi.string().required(),
             definition: Joi.string().required(),
         });
