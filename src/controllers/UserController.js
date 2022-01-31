@@ -208,7 +208,23 @@ export default class UserController {
         }
     }
 
-    static async UserLoginAccount(){
+    static async UserLoginAccount(req, res, next) {
+        const { user_phone } = await (
+            await Validations.UserLoginAccount()
+        ).validateAsync(req.body);
 
+        const user = req.db.users.findOne({
+            where: {
+                user_phone: user_phone,
+            },
+            raw: true,
+        });
+
+        if(!user) res.status(400).json({
+            ok: false,
+            message: "User not found"
+        })
+
+        
     }
 }
