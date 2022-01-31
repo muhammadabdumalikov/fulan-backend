@@ -262,4 +262,21 @@ export default class UserController {
             });
         }
     }
+
+    static async GetAllUsers(req, res, next) {
+        try {
+            const users = await req.db.users.findAll();
+
+            res.status(200).json({
+                ok: true,
+                data: users,
+            });
+
+        } catch (error) {
+            console.log(error);
+            res.status(400).json({
+                ok: false,
+            });
+        }
+    }
 }
