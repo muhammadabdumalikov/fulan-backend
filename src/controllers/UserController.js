@@ -85,15 +85,75 @@ export default class UserController {
                     ok: false,
                     message: "Validation code incorrect",
                 });
+
             let { validation_code } = await (
                 await Validations.ValidateUserCodeValidation()
             ).validateAsync(req.body);
 
-            res.status(200).json({
-                ok: true
-            })
+            if (
+                Number(validation_code) !== Number(attempt.dataValues.user_code)
+            ) {
+                const codeAttemptsVal = 3;
+                const phoneAttemptsVal = 3;
+                const banTime = 7200000;
 
-            console.log(validation_code);
+                if (
+                    Number(attempt.dataValues.user_attempts) >
+                    codeAttemptsVal - 1
+                ) {
+                    await request.db.attempts.destroy({
+                        where: {
+                            attempt_id: validationId,
+                        },
+                    });
+
+                    await request.db.users.update(
+                        {
+                            user_attempts:
+                                attempt.dataValues.user.dataValues
+                                    .user_attempts + 1,
+                        },
+                        {
+                            where: {
+                                user_id: attempt.dataValues.user_id,
+                            },
+                        }
+                    );
+
+                    if (
+                        Number(
+                            attempt.dataValues.user.dataValues.user_attempts
+                        ) >=
+                        phoneAttemptsVal - 1
+                    ) {
+                        await request.db.users.update(
+                            {
+                                user_attempts: 0,
+                            },
+                            {
+                                where: {
+                                    user_id: attempt.dataValues.user_id,
+                                },
+                            }
+                        );
+
+                        await request.db.bans.create({
+                            user_id: attempt.dataValues.user_id,
+                            expireDate: new Date(Date.now() + banTime),
+                        });
+                    }
+                }
+                res.status(400).json({
+                    ok: false,
+                    message: "You entered incorrect code!",
+                });
+            }
+
+            res.status(200).json({
+                ok: true,
+            });
+
+            console.log(validation_code, attempt.dataValues);
         } catch (error) {
             console.log(error);
         }
