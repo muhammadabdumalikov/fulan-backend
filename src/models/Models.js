@@ -8,11 +8,9 @@ export default class Models {
             },
             first_name: {
                 type: Sequelize.DataTypes.STRING(32),
-                allowNull: false,
             },
             last_name: {
                 type: Sequelize.DataTypes.STRING(32),
-                allowNull: false,
             },
             user_phone: {
                 type: Sequelize.DataTypes.STRING(13),
@@ -23,12 +21,9 @@ export default class Models {
             user_second_phone: {
                 type: Sequelize.DataTypes.STRING(13),
                 is: /^998[389][012345789][0-9]{7}$/,
-                allowNull: true,
             },
             address: {
                 type: Sequelize.DataTypes.STRING,
-                allowNull: true,
-                defaultValue: " "
             },
             working: {
                 type: Sequelize.DataTypes.BOOLEAN,
@@ -37,12 +32,9 @@ export default class Models {
             },
             birth_date: {
                 type: Sequelize.DataTypes.DATEONLY,
-                allowNull: true,
             },
             about_self: {
                 type: Sequelize.DataTypes.STRING,
-                allowNull: true,
-                defaultValue: ""
             },
             provide_type: {
                 type: Sequelize.DataTypes.ENUM,
@@ -51,13 +43,9 @@ export default class Models {
             },
             summ: {
                 type: Sequelize.DataTypes.STRING(32),
-                allowNull: false,
-                defaultValue: ""
             },
             definition: {
                 type: Sequelize.DataTypes.STRING,
-                allowNull: false,
-                defaultValue: ""
             },
             user_role: {
                 type: Sequelize.DataTypes.ENUM,
@@ -71,7 +59,6 @@ export default class Models {
             },
             provided: {
                 type: Sequelize.DataTypes.BOOLEAN,
-                allowNull: false,
                 defaultValue: false,
             },
         });
