@@ -8,7 +8,7 @@ import { signJwtToken } from "../modules/jwt.js";
 export default class UserController {
     static async UserCreateAccount(req, res, next) {
         try {
-            const { first_name, last_name, user_phone } = await (
+            const { user_phone } = await (
                 await Validations.UserCreateAccountValidation()
             ).validateAsync(req.body);
 
@@ -27,8 +27,6 @@ export default class UserController {
                 });
 
             let user = await req.db.users.create({
-                first_name: first_name,
-                last_name: last_name,
                 user_phone: user_phone,
             });
 
