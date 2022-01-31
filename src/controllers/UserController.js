@@ -3,6 +3,7 @@ import pkg, { Op } from "sequelize";
 import { Validations } from "../modules/validations.js";
 import { v4 as uuidv4 } from "uuid";
 import RN from "random-number";
+import { signJwtToken } from "../modules/jwt.js";
 
 export default class UserController {
     static async UserCreateAccount(req, res, next) {
@@ -101,13 +102,13 @@ export default class UserController {
                     Number(attempt.dataValues.user_attempts) >
                     codeAttemptsVal - 1
                 ) {
-                    await request.db.attempts.destroy({
+                    await req.db.attempts.destroy({
                         where: {
                             attempt_id: validationId,
                         },
                     });
 
-                    await request.db.users.update(
+                    await req.db.users.update(
                         {
                             user_attempts:
                                 attempt.dataValues.user.dataValues
@@ -126,7 +127,7 @@ export default class UserController {
                         ) >=
                         phoneAttemptsVal - 1
                     ) {
-                        await request.db.users.update(
+                        await req.db.users.update(
                             {
                                 user_attempts: 0,
                             },
@@ -137,7 +138,7 @@ export default class UserController {
                             }
                         );
 
-                        await request.db.bans.create({
+                        await req.db.bans.create({
                             user_id: attempt.dataValues.user_id,
                             expireDate: new Date(Date.now() + banTime),
                         });
@@ -149,8 +150,56 @@ export default class UserController {
                 });
             }
 
-            res.status(200).json({
+            let userAgent = req.headers["user-agent"];
+            let ipAddress =
+                req.headers["x-forwarded-for"] || req.connection.remoteAddress;
+
+            if (!(userAgent && ipAddress))
+                res.status(400).json({
+                    ok: false,
+                    message: "Invalid device!",
+                });
+
+            const session = await req.db.sessions.create({
+                user_id: attempt.dataValues.user_id,
+                session_inet: ipAddress,
+                session_user_agent: userAgent,
+            });
+
+            const token = signJwtToken({
+                session_id: session.dataValues.session_id,
+            });
+
+            await req.db.attempts.destroy({
+                where: {
+                    user_id: attempt.dataValues.user_id,
+                },
+            });
+
+            await req.db.attempts.update(
+                {
+                    user_attempts: 0,
+                },
+                {
+                    where: {
+                        user_id: attempt.dataValues.user_id,
+                    },
+                }
+            );
+
+            let userData = await req.db.users.findOne({
+                where: {
+                    user_id: attempt.dataValues.user_id,
+                },
+            });
+
+            res.status(201).json({
                 ok: true,
+                message: "Successfully logged in!",
+                data: {
+                    token,
+                    user: userData,
+                },
             });
 
             console.log(validation_code, attempt.dataValues);
