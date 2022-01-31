@@ -220,11 +220,37 @@ export default class UserController {
             raw: true,
         });
 
-        if(!user) res.status(400).json({
-            ok: false,
-            message: "User not found"
-        })
+        if (!user)
+            res.status(400).json({
+                ok: false,
+                message: "User not found",
+            });
 
-        
+        const gen = RN.generator({
+            min: 10000,
+            max: 99999,
+            integer: true,
+        });
+
+        const genNumber = gen();
+
+        let messageID = uuidv4();
+
+        // await sendSmsTo(phone, messageID, genNumber)
+
+        let attempt = await request.db.attempts.create({
+            user_code: genNumber,
+            user_id: user.user_id,
+        });
+
+        res.status(200).json({
+            ok: true,
+            message:
+                "We`ve sent a sms with a confirmation code to your mobile phone. Please enter the 5-digit code below.",
+            data: {
+                id: attempt.dataValues.attempt_id,
+                code: genNumber,
+            },
+        });
     }
 }
