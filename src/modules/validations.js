@@ -46,4 +46,13 @@ export class Validations {
                 .error(new Error("Invalid code")),
         });
     }
+
+    static async UserLoginAccount() {
+        return Joi.object({
+            user_phone: Joi.string()
+                .required()
+                .error(new Error("Phone number is incorrect"))
+                .pattern(/^998[389][012345789][0-9]{7}$/),
+        });
+    }
 }
