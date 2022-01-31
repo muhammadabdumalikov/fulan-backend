@@ -209,48 +209,57 @@ export default class UserController {
     }
 
     static async UserLoginAccount(req, res, next) {
-        const { user_phone } = await (
-            await Validations.UserLoginAccount()
-        ).validateAsync(req.body);
+        try {
+            const { user_phone } = await (
+                await Validations.UserLoginAccount()
+            ).validateAsync(req.body);
 
-        const user = req.db.users.findOne({
-            where: {
-                user_phone: user_phone,
-            },
-            raw: true,
-        });
-
-        if (!user)
-            res.status(400).json({
-                ok: false,
-                message: "User not found",
+            const user = await req.db.users.findOne({
+                where: {
+                    user_phone: user_phone,
+                },
+                raw: true,
             });
 
-        const gen = RN.generator({
-            min: 10000,
-            max: 99999,
-            integer: true,
-        });
+            if (!user)
+                res.status(400).json({
+                    ok: false,
+                    message: "User not found",
+                });
 
-        const genNumber = gen();
+            console.log(await user);
 
-        let messageID = uuidv4();
+            const gen = RN.generator({
+                min: 10000,
+                max: 99999,
+                integer: true,
+            });
 
-        // await sendSmsTo(phone, messageID, genNumber)
+            const genNumber = gen();
 
-        let attempt = await request.db.attempts.create({
-            user_code: genNumber,
-            user_id: user.user_id,
-        });
+            let messageID = uuidv4();
 
-        res.status(200).json({
-            ok: true,
-            message:
-                "We`ve sent a sms with a confirmation code to your mobile phone. Please enter the 5-digit code below.",
-            data: {
-                id: attempt.dataValues.attempt_id,
-                code: genNumber,
-            },
-        });
+            // await sendSmsTo(phone, messageID, genNumber)
+
+            let attempt = await req.db.attempts.create({
+                user_code: genNumber,
+                user_id: user.user_id,
+            });
+
+            res.status(200).json({
+                ok: true,
+                message:
+                    "We`ve sent a sms with a confirmation code to your mobile phone. Please enter the 5-digit code below.",
+                data: {
+                    id: attempt.dataValues.attempt_id,
+                    code: genNumber,
+                },
+            });
+        } catch (error) {
+            console.log(error);
+            res.status(400).json({
+                ok: false,
+            });
+        }
     }
 }
