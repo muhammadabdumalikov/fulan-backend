@@ -1,4 +1,4 @@
-import { Validations } from "../modules/validations";
+import { Validations } from "../modules/validations.js";
 
 export default class AdminController{
     static async GetAllUsers(req, res, next) {

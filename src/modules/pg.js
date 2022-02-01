@@ -29,7 +29,7 @@ export async function postgres() {
         //     first_name: "1234",
         //     last_name: "1234",
         //     user_phone: "998911234567",
-        //     user_second_phone: "998911234567",
+        //     user_second_phone: "998911234566",
         //     address: "Andijon",
         //     working: false,
         //     about_self: "Admin",
