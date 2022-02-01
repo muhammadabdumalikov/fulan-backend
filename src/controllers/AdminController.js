@@ -261,6 +261,28 @@ export default class AdminController {
         }
     }
 
+    static async GetAllUsers(req, res, next) {
+        try {
+            let { userId } = req.params;
+
+            let user = await req.db.users.findOne({
+                where: {
+                    user_id: userId,
+                },
+            });
+
+            res.status(200).json({
+                ok: true,
+                data: user,
+            });
+        } catch (error) {
+            console.log(error);
+            res.status(400).json({
+                ok: false,
+            });
+        }
+    }
+
     static async AcceptOneUser(req, res, next) {
         try {
             let { userId } = req.body;
