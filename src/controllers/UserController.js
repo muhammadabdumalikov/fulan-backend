@@ -1,4 +1,3 @@
-import Express from "express";
 import pkg, { Op } from "sequelize";
 import { Validations } from "../modules/validations.js";
 import { v4 as uuidv4 } from "uuid";
