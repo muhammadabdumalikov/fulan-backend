@@ -1,27 +1,33 @@
-import { verifyJwtToken } from "../modules/jsonwebtoken.js";
+import { verifyJwtToken } from "../modules/jwt.js";
 
 export default async function AdminMiddleware(request, response, next) {
     try {
         if (!request.headers["authorization"]) {
-            throw new response.error(403, "Token not found");
+            response
+                .status(403)
+                .json({ ok: false, message: "Token not found" });
         }
 
         const data = verifyJwtToken(request.headers["authorization"]);
 
-        if (!data) throw new response.error(403, "Invalid token");
+        if (!data)
+            response.status(403).json({ ok: false, message: "Invalid token" });
 
         const session = await request.db.sessions.findOne({
             where: {
-                session_id: data.session_id
+                session_id: data.session_id,
             },
             include: {
-                model: request.db.users
-            }
+                model: request.db.users,
+            },
         });
 
         const user_agent = request.headers["user-agent"];
 
-        if (!session) throw new response.error(403, "Session already expired");
+        if (!session)
+            response
+                .status(403)
+                .json({ ok: false, message: "Session already expired" });
 
         // if (session.dataValues.session_user_agent !== user_agent) {
         //     await request.db.sessions.destroy({
@@ -32,7 +38,18 @@ export default async function AdminMiddleware(request, response, next) {
         //     throw new response.error(403, "Session expired");
         // }
 
-        if (!(session.user.user_role === 'admin' || session.user.user_role === 'superadmin')) throw new response.error(405, "Permission denied! You are not an admin.")
+        if (
+            !(
+                session.user.user_role === "admin" ||
+                session.user.user_role === "superadmin"
+            )
+        )
+            response
+                .status(403)
+                .json({
+                    ok: false,
+                    message: "Permission denied! You are not an admin.",
+                });
 
         request.session = session;
 
