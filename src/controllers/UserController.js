@@ -323,7 +323,11 @@ export default class UserController {
 
     static async GetAllUsers(req, res, next) {
         try {
-            const users = await req.db.users.findAll();
+            const users = await req.db.users.findAll({
+              attributes: {
+                  exclude: ["user_attempts", "user_role"]
+              }
+            });
 
             res.status(200).json({
                 ok: true,
