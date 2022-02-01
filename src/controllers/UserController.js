@@ -262,7 +262,7 @@ export default class UserController {
 
     static async EditUserAccount(req, res, next) {
         try {
-            let token = req.headers["token"];
+            let token = req.headers["authorization"];
 
             let userToken = verifyJwtToken(token);
 
