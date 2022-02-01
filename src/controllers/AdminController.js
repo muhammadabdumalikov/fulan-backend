@@ -1,4 +1,5 @@
 import { Validations } from "../modules/validations.js";
+import RN from "random-number"
 
 export default class AdminController {
     static async AdminLoginAccount(req, res, next) {
@@ -41,6 +42,16 @@ export default class AdminController {
                 code: genNumber,
             },
         });
+    }
+
+    static async ValidateAdminCode(req, res, next) {
+        let validateId = req.headers["authorization"]
+
+        if (!validateId) res.status(400).json({
+            ok: false,
+            message: "You have not a permission or invalid token"
+        })
+
     }
 
     static async GetAllUsers(req, res, next) {
