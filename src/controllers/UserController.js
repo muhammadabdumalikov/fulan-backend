@@ -325,6 +325,7 @@ export default class UserController {
             const users = await req.db.users.findAll({
                 where: {
                     user_role: "user",
+                    accepted: true
                 },
                 attributes: {
                     exclude: ["user_attempts", "user_role"],

@@ -61,6 +61,10 @@ export default class Models {
                 type: Sequelize.DataTypes.BOOLEAN,
                 defaultValue: false,
             },
+            accepted: {
+                type: Sequelize.DataTypes.BOOLEAN,
+                defaultValue: false,
+            }
         });
     }
 
