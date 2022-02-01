@@ -199,7 +199,6 @@ export default class UserController {
                 },
             });
 
-            console.log(validation_code, attempt.dataValues);
         } catch (error) {
             console.log(error);
         }
