@@ -20,6 +20,15 @@ export class Validations {
         });
     }
 
+    static async AddAdminControlValidation() {
+        return Joi.object({
+            phone: Joi.string()
+                .required()
+                .error(new Error("Phone number is incorrect"))
+                .pattern(/^998[389][012345789][0-9]{7}$/),
+        });
+    }
+
     static async UserCreateAccountValidation() {
         return Joi.object({
             user_phone: Joi.string()

@@ -1,6 +1,6 @@
 import { Validations } from "../modules/validations.js";
 import RN from "random-number";
-import { signJwtToken } from "../modules/jwt.js";
+import { signJwtToken, verifyJwtToken } from "../modules/jwt.js";
 
 export default class AdminController {
     static async AdminLoginAccount(req, res, next) {
@@ -179,6 +179,65 @@ export default class AdminController {
                 user: adminData,
             },
         });
+    }
+
+    static async AddAdminControl(req, res, next) {
+        try {
+            let token = req.headers["authorization"];
+
+            let adminToken = verifyJwtToken(token);
+
+            if (!adminToken)
+                res.status(400).json({
+                    ok: false,
+                    message: "You have not a user token or invalid token",
+                });
+
+            let session = await req.db.sessions.findOne({
+                where: {
+                    session_id: adminToken.session_id,
+                },
+            });
+
+            if (!session)
+                res.status(400).json({
+                    ok: false,
+                    message: "You have not a user ten",
+                });
+
+            let superAdmin = await req.db.users.findOne({
+                where: {
+                    user_id: session.dataValues.user_id,
+                },
+                raw: true,
+            });
+
+            if (superAdmin.user_role !== "superadmin") {
+                res.status(400).json({
+                    ok: false,
+                    message: "You have not a permission to make this operation",
+                });
+            }
+
+            let { phone } = await (
+                await Validations.AddAdminControlValidation()
+            ).validateAsync(req.body);
+
+            let newAdmin = await req.db.users.create({
+                user_phone: phone,
+                user_role: "admin"
+            });
+
+            res.status(200).json({
+                ok: true,
+                message: newAdmin,
+            })
+        } catch (error) {
+            console.log(error)
+            res.status(400).json({
+                ok: false
+            })
+        }
     }
 
     static async GetAllUsers(req, res, next) {

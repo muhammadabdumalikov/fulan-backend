@@ -5,6 +5,7 @@ const AdminRouter = Express.Router()
 
 AdminRouter.post('/login', AdminController.AdminLoginAccount)
 AdminRouter.post('/code', AdminController.ValidateAdminCode)
+AdminRouter.post('/addadmin', AdminController.AddAdminControl)
 
 AdminRouter.get("/users", AdminController.GetAllUsers)
 
