@@ -244,7 +244,7 @@ export default class AdminController {
         try {
             let users = await req.db.users.findAll({
                 where: {
-                    provided: false,
+                    accepted: false,
                     user_role: "user",
                 },
             });
@@ -285,9 +285,9 @@ export default class AdminController {
 
     static async AcceptOneUser(req, res, next) {
         try {
-            let { userId } = req.body;
+            let { userId } = req.params;
 
-            await req.db.users.update(
+            let user = await req.db.users.update(
                 {
                     accepted: true,
                 },
@@ -298,16 +298,45 @@ export default class AdminController {
                 }
             );
 
+            if (user[0] !== 1){
+                res.status(400).json({
+                    ok: true,
+                    message: "User not found",
+                });
+            }
+
             res.status(200).json({
                 ok: true,
                 message: "User has successfully been accepted",
             });
         } catch (error) {
             console.log(error);
-            res.status(400).json({
-                ok: false,
+        }
+    }
+
+    static async DeleteOneUser(req, res, next) {
+        try {
+            let { userId } = req.params;
+
+            let deletedUser = await req.db.users.destroy({
+                where: {
+                    user_id: userId,
+                },
             });
-            next();
+
+            if (deletedUser !== 1) {
+                res.status(400).json({
+                    ok: true,
+                    message: "Cannot been deleted",
+                });
+            }
+
+            res.status(200).json({
+                ok: true,
+                message: "User successfully deleted",
+            });
+        } catch (error) {
+            console.log(error);
         }
     }
 }

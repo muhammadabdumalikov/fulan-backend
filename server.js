@@ -36,6 +36,14 @@ async function server() {
     });
 
     await routes(app);
+
+    // await app.use((req, res, next) => {
+    //     next(new ErrorHandler(404, "Not found"));
+    // });
+
+    // await app.use((err, req, res, next) => {
+    //     handleError(err, res);
+    // });
 }
 
 server();

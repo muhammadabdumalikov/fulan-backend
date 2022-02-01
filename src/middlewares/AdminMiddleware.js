@@ -37,26 +37,26 @@ export default async function AdminMiddleware(request, response, next) {
         //     });
         //     throw new response.error(403, "Session expired");
         // }
-
         if (
             !(
                 session.user.user_role === "admin" ||
                 session.user.user_role === "superadmin"
             )
         )
-            response
-                .status(403)
-                .json({
-                    ok: false,
-                    message: "Permission denied! You are not an admin.",
-                });
+            response.status(403).json({
+                ok: false,
+                message: "Permission denied! You are not an admin.",
+            });
 
         request.session = session;
 
         next();
     } catch (error) {
+        console.log(error)
         if (!error.statusCode)
-            error = new response.error(403, "Invalid inputs");
-        next(error);
+            response.status(403).json({
+                error: "Invalid inputs",
+            });
+        next();
     }
 }
