@@ -4,45 +4,49 @@ import { signJwtToken, verifyJwtToken } from "../modules/jwt.js";
 
 export default class AdminController {
     static async AdminLoginAccount(req, res, next) {
-        let { phone } = await (
-            await Validations.AdminLoginAccount()
-        ).validateAsync(req.body);
+        try {
+            let { phone } = await (
+                await Validations.AdminLoginAccount()
+            ).validateAsync(req.body);
 
-        const admin = await req.db.users.findOne({
-            where: {
-                user_phone: phone,
-            },
-            raw: true,
-        });
-
-        if (!admin)
-            res.status(400).json({
-                ok: false,
-                message: "Admin not found",
+            const admin = await req.db.users.findOne({
+                where: {
+                    user_phone: phone,
+                },
+                raw: true,
             });
 
-        const gen = RN.generator({
-            min: 10000,
-            max: 99999,
-            integer: true,
-        });
+            if (!admin)
+                res.status(400).json({
+                    ok: false,
+                    message: "Admin not found",
+                });
 
-        const genNumber = gen();
+            const gen = RN.generator({
+                min: 10000,
+                max: 99999,
+                integer: true,
+            });
 
-        let attempt = await req.db.attempts.create({
-            user_code: genNumber,
-            user_id: admin.user_id,
-        });
+            const genNumber = gen();
 
-        res.status(200).json({
-            ok: true,
-            message:
-                "We`ve sent a sms with a confirmation code to your mobile phone. Please enter the 5-digit code below.",
-            data: {
-                id: attempt.dataValues.attempt_id,
-                code: genNumber,
-            },
-        });
+            let attempt = await req.db.attempts.create({
+                user_code: genNumber,
+                user_id: admin.user_id,
+            });
+
+            res.status(200).json({
+                ok: true,
+                message:
+                    "We`ve sent a sms with a confirmation code to your mobile phone. Please enter the 5-digit code below.",
+                data: {
+                    id: attempt.dataValues.attempt_id,
+                    code: genNumber,
+                },
+            });
+        } catch (error) {
+            console.log(error);
+        }
     }
 
     static async ValidateAdminCode(req, res, next) {
@@ -234,9 +238,6 @@ export default class AdminController {
             });
         } catch (error) {
             console.log(error);
-            res.status(400).json({
-                ok: false,
-            });
         }
     }
 
@@ -255,9 +256,6 @@ export default class AdminController {
             });
         } catch (error) {
             console.log(error);
-            res.status(400).json({
-                ok: false,
-            });
         }
     }
 
@@ -277,9 +275,6 @@ export default class AdminController {
             });
         } catch (error) {
             console.log(error);
-            res.status(400).json({
-                ok: false,
-            });
         }
     }
 
@@ -298,7 +293,7 @@ export default class AdminController {
                 }
             );
 
-            if (user[0] !== 1){
+            if (user[0] !== 1) {
                 res.status(400).json({
                     ok: true,
                     message: "User not found",
