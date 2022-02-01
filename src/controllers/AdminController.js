@@ -225,25 +225,22 @@ export default class AdminController {
 
             let newAdmin = await req.db.users.create({
                 user_phone: phone,
-                user_role: "admin"
+                user_role: "admin",
             });
 
             res.status(200).json({
                 ok: true,
                 message: newAdmin,
-            })
+            });
         } catch (error) {
-            console.log(error)
+            console.log(error);
             res.status(400).json({
-                ok: false
-            })
+                ok: false,
+            });
         }
     }
 
     static async GetAllUsers(req, res, next) {
-        let token = req.headers["authorization"];
-        console.log(token);
-
         let users = await req.db.users.findAll({
             where: {
                 user_role: "user",
