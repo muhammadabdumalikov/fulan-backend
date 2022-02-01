@@ -4,8 +4,8 @@ import AdminMiddleware from "../middlewares/AdminMiddleware.js";
 
 const AdminRouter = Express.Router();
 
-AdminRouter.post("/login", AdminMiddleware, AdminController.AdminLoginAccount);
-AdminRouter.post("/code", AdminMiddleware, AdminController.ValidateAdminCode);
+AdminRouter.post("/login", AdminController.AdminLoginAccount);
+AdminRouter.post("/code", AdminController.ValidateAdminCode);
 AdminRouter.post("/addadmin", AdminMiddleware, AdminController.AddAdminControl);
 
 AdminRouter.get("/users", AdminMiddleware, AdminController.GetAllUsers);
