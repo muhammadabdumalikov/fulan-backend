@@ -3,7 +3,7 @@ import AdminController from "../controllers/AdminController"
 
 const AdminRouter = Express.Router()
 
-AdminRouter.get("/", AdminController.GetAllUsers)
+AdminRouter.get("/users", AdminController.GetAllUsers)
 
 
 export default {
