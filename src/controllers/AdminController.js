@@ -241,18 +241,43 @@ export default class AdminController {
     }
 
     static async GetAllUsers(req, res, next) {
-        let users = await req.db.users.findAll({
-            where: {
-                provided: false,
-                user_role: "user"
-            },
-        });
+        try {
+            let users = await req.db.users.findAll({
+                where: {
+                    provided: false,
+                    user_role: "user",
+                },
+            });
 
-        res.status(200).json({
-            ok: true,
-            data: users
-        })
+            res.status(200).json({
+                ok: true,
+                data: users,
+            });
+        } catch (error) {
+            console.log(error);
+            res.status(400).json({
+                ok: false,
+            });
+        }
     }
 
-    static async AcceptOneUser(req, res, next) {}
+    static async AcceptOneUser(req, res, next) {
+        try {
+            let { user_id } = req.body;
+
+            await req.db.users.update({
+                accepted: true,
+            });
+
+            res.status(200).json({
+                ok: true,
+                message: "User has successfully been accepted"
+            })
+        } catch (error) {
+            console.log(error);
+            res.status(400).json({
+                ok: false,
+            });
+        }
+    }
 }
