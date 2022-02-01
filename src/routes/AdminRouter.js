@@ -7,8 +7,10 @@ const AdminRouter = Express.Router();
 AdminRouter.post("/login", AdminController.AdminLoginAccount);
 AdminRouter.post("/code", AdminController.ValidateAdminCode);
 AdminRouter.post("/addadmin", AdminMiddleware, AdminController.AddAdminControl);
+AdminRouter.post("/users", AdminMiddleware, AdminController.AcceptOneUser);
 
 AdminRouter.get("/users", AdminMiddleware, AdminController.GetAllUsers);
+AdminRouter.get("/users/:user_id", AdminMiddleware, AdminController.GetAllUsers);
 
 export default {
     path: "/api/admin",

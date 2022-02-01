@@ -263,21 +263,29 @@ export default class AdminController {
 
     static async AcceptOneUser(req, res, next) {
         try {
-            let { user_id } = req.body;
+            let { userId } = req.body;
 
-            await req.db.users.update({
-                accepted: true,
-            });
+            await req.db.users.update(
+                {
+                    accepted: true,
+                },
+                {
+                    where: {
+                        user_id: userId,
+                    },
+                }
+            );
 
             res.status(200).json({
                 ok: true,
-                message: "User has successfully been accepted"
-            })
+                message: "User has successfully been accepted",
+            });
         } catch (error) {
             console.log(error);
             res.status(400).json({
                 ok: false,
             });
+            next();
         }
     }
 }
