@@ -261,7 +261,7 @@ export default class AdminController {
         }
     }
 
-    static async GetAllUsers(req, res, next) {
+    static async GetOneUser(req, res, next) {
         try {
             let { userId } = req.params;
 

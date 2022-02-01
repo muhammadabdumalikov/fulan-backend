@@ -10,7 +10,7 @@ AdminRouter.post("/addadmin", AdminMiddleware, AdminController.AddAdminControl);
 AdminRouter.post("/users", AdminMiddleware, AdminController.AcceptOneUser);
 
 AdminRouter.get("/users", AdminMiddleware, AdminController.GetAllUsers);
-AdminRouter.get("/users/:userId", AdminMiddleware, AdminController.GetAllUsers);
+AdminRouter.get("/users/:userId", AdminMiddleware, AdminController.GetOneUser);
 
 export default {
     path: "/api/admin",
