@@ -25,18 +25,18 @@ export async function postgres() {
         // })
         // await db.driver_trips.sync({force: true})
 
-        await db.users.create({
-            first_name: "1234",
-            last_name: "1234",
-            user_phone: "998911234567",
-            user_second_phone: "998911234566",
-            address: "Andijon",
-            working: false,
-            about_self: "Admin",
-            summ: "0",
-            definition: "Admin",
-            user_role: "superadmin",
-        })
+        // await db.users.create({
+        //     first_name: "1234",
+        //     last_name: "1234",
+        //     user_phone: "998911234567",
+        //     user_second_phone: "998911234566",
+        //     address: "Andijon",
+        //     working: false,
+        //     about_self: "Admin",
+        //     summ: "0",
+        //     definition: "Admin",
+        //     user_role: "superadmin",
+        // })
 
         await sequelize.sync({ force: false });
 
