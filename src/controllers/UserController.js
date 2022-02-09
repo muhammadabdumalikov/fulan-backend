@@ -198,7 +198,6 @@ export default class UserController {
                     user: userData,
                 },
             });
-
         } catch (error) {
             console.log(error);
         }
@@ -322,19 +321,39 @@ export default class UserController {
 
     static async GetAllUsers(req, res, next) {
         try {
-            const users = await req.db.users.findAll({
+            const pageAsNumber = Number.parseInt(req.query.page);
+            const sizeAsNumber = Number.parseInt(req.query.size);
+
+            let page = 0;
+            if (!Number.isNaN(pageAsNumber) && pageAsNumber > 0) {
+                page = pageAsNumber;
+            }
+
+            let size = 50;
+            if (
+                !Number.isNaN(sizeAsNumber) &&
+                sizeAsNumber > 0 &&
+                sizeAsNumber < 50
+            ) {
+                size = sizeAsNumber;
+            }
+
+            const users = await req.db.users.findAndCountAll({
                 where: {
                     user_role: "user",
-                    accepted: true
+                    accepted: true,
                 },
                 attributes: {
                     exclude: ["user_attempts", "user_role"],
                 },
+                limit: size,
+                offset: page * size,
             });
 
             res.status(200).json({
                 ok: true,
-                data: users,
+                data: users.rows,
+                totalPages: Math.ceil(users.count / size),
             });
         } catch (error) {
             console.log(error);
