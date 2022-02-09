@@ -54,8 +54,9 @@ export default class UserController {
             });
         } catch (error) {
             console.log(error);
-            if (!error.statusCode) error = new res.error(400, "Invalid inputs");
-            next(error);
+            res.status(400).json({
+                ok: false,
+            });
         }
     }
 
@@ -200,6 +201,9 @@ export default class UserController {
             });
         } catch (error) {
             console.log(error);
+            res.status(400).json({
+                ok: false,
+            });
         }
     }
 
