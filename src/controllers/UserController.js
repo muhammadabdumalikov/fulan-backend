@@ -10,7 +10,6 @@ export default class UserController {
             const { user_phone } = await (
                 await Validations.UserCreateAccountValidation()
             ).validateAsync(req.body);
-            console.log(user_phone)
 
             let isUserExist = await req.db.users.findOne({
                 where: {
@@ -54,10 +53,9 @@ export default class UserController {
                 },
             });
         } catch (error) {
-            console.log(error);
             res.status(400).json({
                 ok: false,
-                message: error
+                message: error.toString(),
             });
         }
     }
