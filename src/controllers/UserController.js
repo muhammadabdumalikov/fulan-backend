@@ -56,6 +56,7 @@ export default class UserController {
             console.log(error);
             res.status(400).json({
                 ok: false,
+                message: error
             });
         }
     }
